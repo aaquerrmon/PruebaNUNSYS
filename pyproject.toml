@@ -1,0 +1,94 @@
+[project]
+name = "agentic-poc"
+version = "0.1.0"
+description = "POC agéntica: consultas de negocio multi-fuente (ERP Northwind, API de producción simulada, RAG PDF) con Deep Agents, FastAPI, Chainlit e inferencia 100% local con vLLM"
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "deepagents>=0.7.25,<0.8",
+    "langchain>=1.4.6,<2",
+    "langchain-openai>=1.7.2,<2",
+    "langchain-chroma>=1.1.0,<2",
+    "langchain-text-splitters>=1.1.3,<2",
+    "fastapi>=0.143.1,<1",
+    "uvicorn[standard]>=0.54,<1",
+    "chainlit>=2.12,<3",
+    "sqlalchemy>=2.1.4,<3",
+    "pydantic>=2.14,<3",
+    "pydantic-settings>=2.10,<3",
+    "httpx>=0.28,<1",
+    "chromadb>=1.5,<2",
+    "pypdf>=6,<7",
+    "python-multipart>=0.0.20",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1,<10",
+    "pytest-asyncio>=0.25,<2",
+    "ruff==0.17.0",
+    "mypy>=2.0,<3",
+    "fpdf2>=2.8",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentic_poc"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+exclude = [".git", ".venv", "dist", "build", ".opencode"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "A", "SIM", "RUF"]
+ignore = [
+    "E501",   # el formateador se encarga del largo de línea
+    "B008",   # dependencias por defecto de FastAPI (Depends/Field) son la práctica habitual
+    "SIM105", # contextlib.suppress no siempre es más claro que try/except pass
+    "RUF012", # anotaciones de clase mutables: se resuelven con Pydantic
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["N818" ,"S"]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "src"
+packages = ["agentic_poc"]
+strict = false
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+ignore_missing_imports = false
+
+[[tool.mypy.overrides]]
+module = ["chromadb.*", "chainlit.*", "fpdf.*", "langchain_chroma.*", "pypdf.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["agentic_poc.ui.*", "agentic_poc.production_api.*", "tests.*", "test_*", "conftest"]
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "local_llm: requiere los servidores vLLM locales (llm/embeddings) levantados",
+    "gpu: requiere GPU con los dos modelos vLLM cargados y comprobaciones de VRAM",
+    "integration: prueba de integración con servicios externos del compose",
+]
+addopts = "-ra --strict-markers"
+
+[tool.coverage.run]
+source = ["src/agentic_poc"]

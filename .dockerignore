@@ -1,0 +1,13 @@
+.git
+.venv
+.mypy_cache
+.ruff_cache
+.data
+__pycache__
+*.pyc
+.env
+data/
+tests/
+.opencode/
+.files/
+Prueba-Tecnica-IA-Agentes.pdf
