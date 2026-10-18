@@ -264,12 +264,15 @@ def _make_order_amounts(context: ToolContext) -> StructuredTool:
 
 
 def _make_search_documents(context: ToolContext) -> StructuredTool:
-    async def search_documents(query: str, k: int = 5) -> str:
+    async def search_documents(query: str, k: int = 5, doc_ids: list[str] | None = None) -> str:
         try:
-            chunks = context.rag.search_relevant(query, k=k)
+            chunks = context.rag.search_relevant(query, k=k, doc_ids=doc_ids)
         except RagError as exc:
             with ToolRecorder(
-                context, "search_documents", source="Documentos", args=f"query={query!r}, k={k}"
+                context,
+                "search_documents",
+                source="Documentos",
+                args=f"query={query!r}, k={k}, doc_ids={doc_ids}",
             ) as rec:
                 rec.record_count = 0
                 raise
@@ -277,7 +280,7 @@ def _make_search_documents(context: ToolContext) -> StructuredTool:
         record_documents_step(
             context,
             tool="search_documents",
-            args=f"query={query!r}, k={k}",
+            args=f"query={query!r}, k={k}, doc_ids={doc_ids}",
             evidence_kind="document_chunks",
             payload=[
                 {

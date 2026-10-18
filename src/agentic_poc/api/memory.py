@@ -69,7 +69,7 @@ class ConversationStore:
                         "conversation_id": conversation_id,
                         "role": "assistant",
                         "content": assistant,
-                        "ts": now + "1",
+                        "ts": now + ".5",
                     },
                 ],
             )

@@ -34,3 +34,7 @@ class OrderAmountsArgs(BaseModel):
 class SearchDocumentsArgs(BaseModel):
     query: str = Field(min_length=2, description="Pregunta o palabras clave sobre los documentos.")
     k: int = Field(default=5, ge=1, le=10, description="Numero maximo de fragmentos a recuperar.")
+    doc_ids: list[str] | None = Field(
+        default=None,
+        description="IDs de documentos a limitar la busqueda (si se omite, se buscan en todos).",
+    )

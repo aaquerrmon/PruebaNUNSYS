@@ -28,9 +28,11 @@ class _StubOrchestrator:
     def __init__(self) -> None:
         self.calls: list[tuple[str, int]] = []
 
-    async def answer(self, question: str, history: list | None = None) -> QueryResponse:
+    async def answer(
+        self, question: str, history: list | None = None, doc_ids: list[str] | None = None
+    ) -> QueryResponse:
         history = history or []
-        self.calls.append((question, len(history)))
+        self.calls.append((question, len(history), doc_ids))
         return QueryResponse(
             answer=f"Respuesta para: {question}",
             sources=["ERP", "Producción"],

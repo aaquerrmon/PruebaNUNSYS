@@ -92,10 +92,13 @@ def main() -> int:
     )
     rag = RagService(embeddings, persist_directory=settings.vector_store_path)
     for pdf in pdfs:
-        result = rag.add_pdf(pdf)
-        print(
-            f"[bootstrap] ingestado {result.doc_id}: {result.chunks} chunks, {result.pages} páginas"
-        )
+        try:
+            result = rag.add_pdf(pdf)
+            print(
+                f"[bootstrap] ingestado {result.doc_id}: {result.chunks} chunks, {result.pages} páginas"
+            )
+        except Exception as e:
+            print(f"[bootstrap] error procesando {pdf}: {e}")
     print("[bootstrap] listo")
     return 0
 

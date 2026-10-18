@@ -28,6 +28,7 @@ class ToolContext:
     rag: RagService
     collector: EvidenceCollector = field(default_factory=EvidenceCollector)
     today: date = field(default_factory=date.today)
+    doc_ids: list[str] | None = None
 
     @property
     def business(self) -> BusinessService:

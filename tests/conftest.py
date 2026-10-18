@@ -49,8 +49,7 @@ def settings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[Settin
 def _clear_engine_caches() -> None:
     from agentic_poc.api import dependencies as deps
 
-    deps._get_engine_app.cache_clear()
-    deps._get_engine_erp.cache_clear()
+    deps.clear_caches()
 
 
 @pytest.fixture()

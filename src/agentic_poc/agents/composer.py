@@ -179,6 +179,7 @@ def compose_response(
     duration_ms: float,
     model: str,
     used_memory: bool,
+    doc_ids: list[str] | None = None,
 ) -> QueryResponse:
     data = _collect_data(collector)
     citations = _collect_citations(collector)
@@ -195,4 +196,5 @@ def compose_response(
         duration_ms=duration_ms,
         model=model,
         used_memory=used_memory,
+        doc_ids=doc_ids or [],
     )

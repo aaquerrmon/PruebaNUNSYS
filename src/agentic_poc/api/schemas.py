@@ -10,6 +10,10 @@ from pydantic import BaseModel, Field
 class QueryRequest(BaseModel):
     question: str = Field(min_length=3, max_length=2000)
     conversation_id: str | None = Field(default=None)
+    doc_ids: list[str] | None = Field(
+        default=None,
+        description="IDs de documentos a limitar la busqueda RAG (si se omite, se buscan en todos).",
+    )
 
 
 class CitationResponse(BaseModel):
@@ -42,6 +46,7 @@ class QueryResponse(BaseModel):
     duration_ms: float
     model: str
     used_memory: bool = False
+    doc_ids: list[str] = Field(default_factory=list)
 
 
 class SSEEvent(BaseModel):

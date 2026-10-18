@@ -89,7 +89,10 @@ class AgentOrchestrator:
         return self._rag
 
     async def answer(
-        self, question: str, history: Sequence[BaseMessage] | None = None
+        self,
+        question: str,
+        history: Sequence[BaseMessage] | None = None,
+        doc_ids: list[str] | None = None,
     ) -> QueryResponse:
         started = time.perf_counter()
         history = tuple(history or ())
@@ -104,6 +107,7 @@ class AgentOrchestrator:
             rag=self._rag,
             collector=collector,
             today=context_today_factory(self._settings)(),
+            doc_ids=doc_ids,
         )
 
         tools = build_tools(context)
@@ -143,5 +147,6 @@ class AgentOrchestrator:
             duration_ms=duration_ms,
             model=self._settings.llm_model,
             used_memory=bool(history),
+            doc_ids=doc_ids,
         )
         return response

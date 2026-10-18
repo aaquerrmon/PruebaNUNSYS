@@ -245,10 +245,17 @@ class RagService:
 
     # -- busqueda -----------------------------------------------------------
 
-    def search(self, query: str, *, k: int | None = None) -> list[RetrievedChunk]:
+    def search(
+        self,
+        query: str,
+        *,
+        k: int | None = None,
+        doc_ids: list[str] | None = None,
+    ) -> list[RetrievedChunk]:
         limit = k or self.top_k
+        where = {"doc_id": {"$in": doc_ids}} if doc_ids else None
         try:
-            results = self._store.similarity_search_with_score(query, k=limit)
+            results = self._store.similarity_search_with_score(query, k=limit, filter=where)
         except Exception as exc:
             raise RagError(f"Fallo la busqueda vectorial: {exc}") from exc
         chunks: list[RetrievedChunk] = []
@@ -269,9 +276,17 @@ class RagService:
             )
         return chunks
 
-    def search_relevant(self, query: str, *, k: int | None = None) -> list[RetrievedChunk]:
+    def search_relevant(
+        self,
+        query: str,
+        *,
+        k: int | None = None,
+        doc_ids: list[str] | None = None,
+    ) -> list[RetrievedChunk]:
         """Fragmentos por encima del umbral de similitud (puede ser vacio)."""
-        return [c for c in self.search(query, k=k) if c.score >= self.score_threshold]
+        return [
+            c for c in self.search(query, k=k, doc_ids=doc_ids) if c.score >= self.score_threshold
+        ]
 
     @property
     def is_empty(self) -> bool:

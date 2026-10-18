@@ -1,4 +1,3 @@
-*.pdf
 .env
 .venv/
 __pycache__/
@@ -11,11 +10,6 @@ build/
 .ruff_cache/
 .coverage
 htmlcov/
-data/
-models/
-*.db
-*.db-shm
-*.db-wal
 .chainlit/
 .files/
 .DS_Store

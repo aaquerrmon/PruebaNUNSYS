@@ -21,6 +21,7 @@ from sse_starlette.sse import EventSourceResponse
 from agentic_poc.agents.orchestrator import AgentOrchestrator
 from agentic_poc.api.dependencies import (
     ConversationStore,
+    _get_conversation_store,
     get_conversation_store,
     get_orchestrator,
     get_production_client,
@@ -50,6 +51,8 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     settings = get_settings()
     settings.assert_local_inference()
+    # Crear tablas de memoria conversacional al arrancar (una sola vez por proceso)
+    _get_conversation_store()
     app.state.ready = True
     yield
 
@@ -139,7 +142,7 @@ async def query(
         history = await store.get_history(
             request.conversation_id, limit=settings.memory_max_turns * 2
         )
-    response = await orchestrator.answer(request.question, history)
+    response = await orchestrator.answer(request.question, history, doc_ids=request.doc_ids)
     if request.conversation_id:
         await store.save_turn(request.conversation_id, request.question, response.answer)
     # map to API schema
@@ -158,6 +161,7 @@ async def query(
         duration_ms=response.duration_ms,
         model=response.model,
         used_memory=response.used_memory,
+        doc_ids=response.doc_ids,
     )
 
 
@@ -176,7 +180,7 @@ async def query_stream(
                 request.conversation_id, limit=settings.memory_max_turns * 2
             )
         try:
-            response = await orchestrator.answer(request.question, history)
+            response = await orchestrator.answer(request.question, history, doc_ids=request.doc_ids)
             if request.conversation_id:
                 await store.save_turn(request.conversation_id, request.question, response.answer)
             yield SSEEvent(event="answer", data=response.model_dump()).model_dump_json()
