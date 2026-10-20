@@ -2,7 +2,11 @@
 
 ## Video explicativo
 
-[[https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://youtu.be/ctSBqmnsgwY)
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=ctSBqmnsgwY" target="_blank">
+    <img src="https://img.youtube.com/vi/ctSBqmnsgwY/hqdefault.jpg" alt="Ver vídeo en YouTube" width="600" />
+  </a>
+</p>
 
 
 
