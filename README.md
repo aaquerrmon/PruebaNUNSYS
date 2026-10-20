@@ -1,5 +1,12 @@
 # POC Agéntica — consultas de negocio multi-fuente (ERP + Producción + RAG)
 
+## Video explicativo
+
+[[https://www.youtube.com/watch?v=dQw4w9WgXcQ](https://youtu.be/ctSBqmnsgwY)
+
+
+
+
 Aplicación de referencia que responde preguntas de negocio en lenguaje natural
 combinando tres fuentes reales:
 
